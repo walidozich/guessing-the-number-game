@@ -3,20 +3,16 @@ def get_feedback(guess, secret):
     guess_str = str(guess).zfill(3)
     secret_str = str(secret).zfill(3)
     
-    # Count exact matches (correct position)
     correct_position = sum(g == s for g, s in zip(guess_str, secret_str))
     
-    # Count correct digits in wrong positions
     guess_counts = {}
     secret_counts = {}
     
-    # First, mark the correct positions
     for i in range(3):
         if guess_str[i] != secret_str[i]:
             guess_counts[guess_str[i]] = guess_counts.get(guess_str[i], 0) + 1
             secret_counts[secret_str[i]] = secret_counts.get(secret_str[i], 0) + 1
     
-    # Count how many are in wrong positions
     wrong_position = sum(min(guess_counts.get(d, 0), secret_counts.get(d, 0)) 
                         for d in set(guess_counts.keys()))
     
@@ -36,7 +32,6 @@ def find_best_guess_minimax(possible_numbers):
     best_score = float('inf')
     
     for guess in possible_numbers:
-        # For this guess, see how it partitions the remaining possibilities
         partitions = {}
         
         for candidate in possible_numbers:
@@ -45,10 +40,8 @@ def find_best_guess_minimax(possible_numbers):
                 partitions[feedback] = 0
             partitions[feedback] += 1
         
-        # The worst case is the largest partition
         worst_case = max(partitions.values())
         
-        # We want to minimize this worst case
         if worst_case < best_score:
             best_score = worst_case
             best_guess = guess
@@ -59,7 +52,6 @@ def play_game_minimax():
     print("Think of a 3-digit number (000-999)")
     print("I'll try to guess it using Minimax strategy!\n")
     
-    # All possible numbers
     possible = list(range(1000))
     guesses_feedback = []
     
@@ -68,14 +60,12 @@ def play_game_minimax():
     while True:
         guess_count += 1
         
-        # Find the best guess using minimax
         print("Thinking...", end="", flush=True)
         guess = find_best_guess_minimax(possible)
         print("\r          \r", end="")  # Clear the "Thinking..." message
         
         print(f"\nGuess #{guess_count}: {str(guess).zfill(3)}")
         
-        # Get feedback with clearer questions
         print("\nFeedback:")
         print("  [1] All digits wrong")
         print("  [2] Some correct digits, all in WRONG positions")
@@ -105,10 +95,8 @@ def play_game_minimax():
             print("Invalid choice!")
             continue
         
-        # Store this guess and feedback
         guesses_feedback.append((guess, (correct_pos, wrong_pos)))
         
-        # Filter possible numbers
         possible = [num for num in possible if is_consistent(num, guesses_feedback)]
         
         print(f"Possibilities remaining: {len(possible)}")
