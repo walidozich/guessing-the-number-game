@@ -1,3 +1,5 @@
+
+
 # Numbers Game
 
 A guessing game where the AI tries to find your secret 3-digit number (000-999) using feedback on digit matches.
